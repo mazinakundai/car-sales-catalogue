@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: web-container
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ../src:/var/www/html
+    networks:
+      - car-cat-network
+
+  db:
+    container_name: db-container
+    image: mysql:8.0
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: car_catalog_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+    ports:
+      - "3306:3306"
+    networks:
+      - car-cat-network
+
+volumes:
+  mysql_data:
+
+networks:
+  car-cat-network:
+    name: car-cat-network
